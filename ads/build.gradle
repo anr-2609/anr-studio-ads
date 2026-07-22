@@ -86,11 +86,24 @@ dependencies {
 afterEvaluate {
     publishing {
         publications {
-            create("release", MavenPublication) {
-                from(components["release"])
-                groupId = "com.github.FireAnts"
-                artifactId = "fireants-ads-sdk"
-                version = "6.3"
+            release(MavenPublication) {
+                from components.release
+
+                groupId = 'com.fireants'
+                artifactId = 'ads'
+                version = '1.0.0'
+            }
+        }
+
+        repositories {
+            maven {
+                name = 'GitHubPackages'
+                url = uri('https://maven.pkg.github.com/longtq260900/fireants-ads-sdk')
+
+                credentials {
+                    username = project.findProperty('gpr.user') ?: System.getenv('GITHUB_ACTOR')
+                    password = project.findProperty('gpr.key') ?: System.getenv('GITHUB_TOKEN')
+                }
             }
         }
     }
