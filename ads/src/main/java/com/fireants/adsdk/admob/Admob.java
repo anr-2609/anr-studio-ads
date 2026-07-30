@@ -67,6 +67,7 @@ import com.google.android.gms.ads.nativead.NativeAdOptions;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.android.gms.ads.rewarded.ServerSideVerificationOptions;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback;
 
@@ -79,7 +80,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Admob {
-    private static final String TAG = "GamStudio";
+    private static final String TAG = "FireAntsSdk";
     private static Admob instance;
     private int currentClicked = 0;
     private String nativeId;
@@ -2367,15 +2368,25 @@ public class Admob {
     }
 
     public void showRewardAds(final Activity context, final RewardCallback adCallback) {
+        showRewardAds(context, null, null, adCallback);
+    }
+
+    public void showRewardAds(final Activity context, String ssvUserId, String ssvCustomData, final RewardCallback adCallback) {
         if (AppPurchase.getInstance().isPurchased(context)) {
-            adCallback.onUserEarnedReward(null);
+            if (adCallback != null) {
+                adCallback.onUserEarnedReward(null);
+            }
             return;
         }
         if (rewardedAd == null) {
             initRewardAds(context, nativeId, adCallback);
-            adCallback.onRewardedAdFailedToShow(0);
+            if (adCallback != null) {
+                adCallback.onRewardedAdFailedToShow(0);
+            }
         } else {
-            Admob.this.rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+            final RewardedAd adToShow = rewardedAd;
+            applyServerSideVerificationOptions(adToShow, ssvUserId, ssvCustomData);
+            adToShow.setFullScreenContentCallback(new FullScreenContentCallback() {
                 @Override
                 public void onAdDismissedFullScreenContent() {
                     super.onAdDismissedFullScreenContent();
@@ -2399,17 +2410,17 @@ public class Admob {
                     super.onAdShowedFullScreenContent();
 
                     AppOpenManager.getInstance().setInterstitialShowing(true);
-                    rewardedAd = null;
+                    Admob.this.rewardedAd = null;
                 }
 
                 public void onAdClicked() {
                     super.onAdClicked();
                     if (disableAdResumeWhenClickAds)
                         AppOpenManager.getInstance().disableAdResumeByClickAction();
-                    FireAntsLogEventManager.logClickAdsEvent(context, rewardedAd.getAdUnitId());
+                    FireAntsLogEventManager.logClickAdsEvent(context, adToShow.getAdUnitId());
                     if (adCallback != null) {
                         adCallback.onAdClicked();
-                        adCallback.onAdClicked(rewardedAd.getAdUnitId(), rewardedAd.getResponseInfo().getMediationAdapterClassName(), AdType.REWARDED);
+                        adCallback.onAdClicked(adToShow.getAdUnitId(), adToShow.getResponseInfo().getMediationAdapterClassName(), AdType.REWARDED);
                     }
                 }
 
@@ -2421,7 +2432,7 @@ public class Admob {
                     }
                 }
             });
-            rewardedAd.show(context, rewardItem -> {
+            adToShow.show(context, rewardItem -> {
                 if (adCallback != null) {
                     adCallback.onUserEarnedReward(rewardItem);
                 }
@@ -2430,14 +2441,23 @@ public class Admob {
     }
 
     public void showRewardInterstitial(final Activity activity, RewardedInterstitialAd rewardedInterstitialAd, final RewardCallback adCallback) {
+        showRewardInterstitial(activity, rewardedInterstitialAd, null, null, adCallback);
+    }
+
+    public void showRewardInterstitial(final Activity activity, RewardedInterstitialAd rewardedInterstitialAd, String ssvUserId, String ssvCustomData, final RewardCallback adCallback) {
         if (AppPurchase.getInstance().isPurchased(activity)) {
-            adCallback.onUserEarnedReward(null);
+            if (adCallback != null) {
+                adCallback.onUserEarnedReward(null);
+            }
             return;
         }
         if (rewardedInterstitialAd == null) {
             initRewardAds(activity, nativeId, adCallback);
-            adCallback.onRewardedAdFailedToShow(0);
+            if (adCallback != null) {
+                adCallback.onRewardedAdFailedToShow(0);
+            }
         } else {
+            applyServerSideVerificationOptions(rewardedInterstitialAd, ssvUserId, ssvCustomData);
             rewardedInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                 @Override
                 public void onAdDismissedFullScreenContent() {
@@ -2467,12 +2487,12 @@ public class Admob {
 
                 public void onAdClicked() {
                     super.onAdClicked();
-                    FireAntsLogEventManager.logClickAdsEvent(activity, rewardedAd.getAdUnitId());
+                    FireAntsLogEventManager.logClickAdsEvent(activity, rewardedInterstitialAd.getAdUnitId());
                     if (disableAdResumeWhenClickAds)
                         AppOpenManager.getInstance().disableAdResumeByClickAction();
                     if (adCallback != null) {
                         adCallback.onAdClicked();
-                        adCallback.onAdClicked(rewardedAd.getAdUnitId(), rewardedAd.getResponseInfo().getMediationAdapterClassName(), AdType.REWARDED);
+                        adCallback.onAdClicked(rewardedInterstitialAd.getAdUnitId(), rewardedInterstitialAd.getResponseInfo().getMediationAdapterClassName(), AdType.REWARDED);
                     }
                 }
 
@@ -2493,14 +2513,23 @@ public class Admob {
     }
 
     public void showRewardAds(final Activity context, RewardedAd rewardedAd, final RewardCallback adCallback) {
+        showRewardAds(context, rewardedAd, null, null, adCallback);
+    }
+
+    public void showRewardAds(final Activity context, RewardedAd rewardedAd, String ssvUserId, String ssvCustomData, final RewardCallback adCallback) {
         if (AppPurchase.getInstance().isPurchased(context)) {
-            adCallback.onUserEarnedReward(null);
+            if (adCallback != null) {
+                adCallback.onUserEarnedReward(null);
+            }
             return;
         }
         if (rewardedAd == null) {
             initRewardAds(context, nativeId, adCallback);
-            adCallback.onRewardedAdFailedToShow(0);
+            if (adCallback != null) {
+                adCallback.onRewardedAdFailedToShow(0);
+            }
         } else {
+            applyServerSideVerificationOptions(rewardedAd, ssvUserId, ssvCustomData);
             rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                 @Override
                 public void onAdDismissedFullScreenContent() {
@@ -2555,6 +2584,38 @@ public class Admob {
                 }
             });
         }
+    }
+
+    private void applyServerSideVerificationOptions(RewardedAd rewardedAd, String userId, String customData) {
+        if (rewardedAd == null || (isEmpty(userId) && isEmpty(customData))) {
+            return;
+        }
+        ServerSideVerificationOptions.Builder builder = new ServerSideVerificationOptions.Builder();
+        if (!isEmpty(userId)) {
+            builder.setUserId(userId);
+        }
+        if (!isEmpty(customData)) {
+            builder.setCustomData(customData);
+        }
+        rewardedAd.setServerSideVerificationOptions(builder.build());
+    }
+
+    private void applyServerSideVerificationOptions(RewardedInterstitialAd rewardedAd, String userId, String customData) {
+        if (rewardedAd == null || (isEmpty(userId) && isEmpty(customData))) {
+            return;
+        }
+        ServerSideVerificationOptions.Builder builder = new ServerSideVerificationOptions.Builder();
+        if (!isEmpty(userId)) {
+            builder.setUserId(userId);
+        }
+        if (!isEmpty(customData)) {
+            builder.setCustomData(customData);
+        }
+        rewardedAd.setServerSideVerificationOptions(builder.build());
+    }
+
+    private boolean isEmpty(String value) {
+        return value == null || value.trim().isEmpty();
     }
 
 

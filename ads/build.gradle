@@ -10,7 +10,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 34
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1"
     }
 
     publishing {
@@ -91,7 +91,7 @@ afterEvaluate {
 
                 groupId = 'com.fireants'
                 artifactId = 'ads'
-                version = '1.0.0'
+                version = '1.0.1'
             }
         }
 

@@ -27,6 +27,7 @@ import com.fireants.adsdk.ads.wrapper.ApInterstitialAd;
 import com.fireants.adsdk.ads.wrapper.ApInterstitialPriority2Ad;
 import com.fireants.adsdk.ads.wrapper.ApInterstitialPriorityAd;
 import com.fireants.adsdk.ads.wrapper.ApNativeAd;
+import com.fireants.adsdk.billing.AppPurchase;
 import com.fireants.adsdk.config.FireAntsAdSdkConfig;
 import com.fireants.adsdk.event.FireAntsAdjust;
 import com.fireants.adsdk.funtion.AdCallback;
@@ -68,6 +69,14 @@ public class FireAntsAdSdk {
 
     public Boolean getOrganic() {
         return SharePreferenceUtils.getIsOrganic(adConfig.getApplication());
+    }
+
+    public void setNoAdsUser(boolean isNoAdsUser) {
+        AppPurchase.getInstance().setPurchase(isNoAdsUser);
+    }
+
+    public boolean isNoAdsUser() {
+        return AppPurchase.getInstance().isPurchased();
     }
 
     public Boolean getShouldDisplayNativeOnboardingNormal1(boolean isForceOrganic) {
@@ -946,12 +955,24 @@ public class FireAntsAdSdk {
         Admob.getInstance().showRewardInterstitial(activity, rewardedInterstitialAd, adCallback);
     }
 
+    public void showRewardInterstitial(Activity activity, RewardedInterstitialAd rewardedInterstitialAd, String ssvUserId, String ssvCustomData, RewardCallback adCallback) {
+        Admob.getInstance().showRewardInterstitial(activity, rewardedInterstitialAd, ssvUserId, ssvCustomData, adCallback);
+    }
+
     public void showRewardAds(Activity context, RewardCallback adCallback) {
         Admob.getInstance().showRewardAds(context, adCallback);
     }
 
+    public void showRewardAds(Activity context, String ssvUserId, String ssvCustomData, RewardCallback adCallback) {
+        Admob.getInstance().showRewardAds(context, ssvUserId, ssvCustomData, adCallback);
+    }
+
     public void showRewardAds(Activity context, RewardedAd rewardedAd, RewardCallback adCallback) {
         Admob.getInstance().showRewardAds(context, rewardedAd, adCallback);
+    }
+
+    public void showRewardAds(Activity context, RewardedAd rewardedAd, String ssvUserId, String ssvCustomData, RewardCallback adCallback) {
+        Admob.getInstance().showRewardAds(context, rewardedAd, ssvUserId, ssvCustomData, adCallback);
     }
 
     public void loadInterSplashPriority4SameTime(final Context context,
@@ -1659,4 +1680,3 @@ public class FireAntsAdSdk {
         );
     }
 }
-
