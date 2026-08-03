@@ -169,6 +169,22 @@ public class FireAntsAdSdk {
         Admob.getInstance().setNumToShowAds(countClickToShowAds, currentClicked);
     }
 
+    public void setAppsFlyerCustomerUserId(String customerUserId) {
+        FireAntsAppsFlyer.setCustomerUserId(customerUserId);
+    }
+
+    public void logAppsFlyerLogin() {
+        FireAntsAppsFlyer.logLogin(adConfig.getApplication());
+    }
+
+    public void logAppsFlyerContentView(String contentType, String contentId) {
+        FireAntsAppsFlyer.logContentView(adConfig.getApplication(), contentType, contentId);
+    }
+
+    public void logAppsFlyerOpenPromotion() {
+        FireAntsAppsFlyer.logOpenPromotion(adConfig.getApplication());
+    }
+
     public int getResumeLoadingDialogLayout() {
         if (adConfig != null) {
             return adConfig.getResumeLoadingDialogLayout();

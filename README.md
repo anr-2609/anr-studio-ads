@@ -115,6 +115,14 @@ If you enable AppsFlyer in `AppsFlyerConfig`, the SDK will initialize AppsFlyer 
 - paid ad impression revenue events
 - custom in-app events triggered via `FireAntsLogEventManager`
 
+Optional helper methods for AppsFlyer events:
+~~~
+FireAntsAdSdk.getInstance().setAppsFlyerCustomerUserId("user_123");
+FireAntsAdSdk.getInstance().logAppsFlyerLogin();
+FireAntsAdSdk.getInstance().logAppsFlyerContentView("Accessories", "A187630");
+FireAntsAdSdk.getInstance().logAppsFlyerOpenPromotion();
+~~~
+
 # Ad Splash Interstitial
 ~~~   
 FireAntsAdSdk.getInstance().loadSplashInterstitialAds(this, BuildConfig.ad_interstitial_splash, 25000, 5000, new AdCallback() {
@@ -252,7 +260,6 @@ AppPurchase.getInstance().setPurchaseListener(new PurchaseListener() {
 
 btnIap.setOnClickListener(v -> AppPurchase.getInstance().purchase(MainActivity.this, "android.test.purchased"));
 ~~~
-
 
 
 

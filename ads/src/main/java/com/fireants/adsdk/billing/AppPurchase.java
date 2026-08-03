@@ -876,7 +876,8 @@ public class AppPurchase {
     private void handlePurchase(Purchase purchase) {
         double price = getPriceWithoutCurrency(idPurchaseCurrent, typeIap, offerTokenCurrent);
         String currency = getCurrency(idPurchaseCurrent, typeIap, offerTokenCurrent);
-        FireAntsLogEventManager.onTrackRevenuePurchase((float) price, currency, idPurchaseCurrent, typeIap);
+        FireAntsLogEventManager.onTrackRevenuePurchase((float) price, currency, idPurchaseCurrent, typeIap,
+                purchase.getOrderId(), purchase.getQuantity());
 
         if (purchaseListener != null) {
             isPurchase = true;

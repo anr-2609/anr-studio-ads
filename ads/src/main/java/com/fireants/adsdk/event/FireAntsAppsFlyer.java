@@ -19,6 +19,8 @@ import java.util.Map;
 
 public class FireAntsAppsFlyer {
     private static final String TAG = "FireAntsAppsFlyer";
+    public static final String EVENT_APP_LAUNCH = "af_app_launch";
+    public static final String EVENT_OPEN_PROMOTION = "af_event_4";
     private static final String EVENT_PAID_AD_IMPRESSION = "paid_ad_impression";
     private static final String EVENT_PAID_AD_IMPRESSION_VALUE = "paid_ad_impression_value";
     private static final String KEY_AF_STATUS = "af_status";
@@ -66,6 +68,7 @@ public class FireAntsAppsFlyer {
             }
         }, context);
         AppsFlyerLib.getInstance().start(context);
+        logAppLaunch(context);
     }
 
     public static void onTrackEvent(Context context, String eventName) {
@@ -79,7 +82,8 @@ public class FireAntsAppsFlyer {
         AppsFlyerLib.getInstance().logEvent(context, eventName, eventValues);
     }
 
-    public static void onTrackRevenuePurchase(Context context, float revenue, String currency, String idPurchase, int typeIap) {
+    public static void onTrackRevenuePurchase(Context context, float revenue, String currency, String idPurchase,
+                                              int typeIap, String orderId, int quantity) {
         if (!enableAppsFlyer || context == null) {
             return;
         }
@@ -88,7 +92,40 @@ public class FireAntsAppsFlyer {
         eventValues.put(AFInAppEventParameterName.CURRENCY, currency);
         eventValues.put(AFInAppEventParameterName.CONTENT_ID, idPurchase);
         eventValues.put(AFInAppEventParameterName.CONTENT_TYPE, typeIap == 0 ? "inapp" : "subs");
+        eventValues.put(AFInAppEventParameterName.QUANTITY, quantity);
+        if (!TextUtils.isEmpty(orderId)) {
+            eventValues.put(AFInAppEventParameterName.ORDER_ID, orderId);
+        }
         AppsFlyerLib.getInstance().logEvent(context, AFInAppEventType.PURCHASE, eventValues);
+    }
+
+    public static void logAppLaunch(Context context) {
+        onTrackEvent(context, EVENT_APP_LAUNCH);
+    }
+
+    public static void logLogin(Context context) {
+        onTrackEvent(context, AFInAppEventType.LOGIN);
+    }
+
+    public static void logOpenPromotion(Context context) {
+        onTrackEvent(context, EVENT_OPEN_PROMOTION);
+    }
+
+    public static void logContentView(Context context, String contentType, String contentId) {
+        if (!enableAppsFlyer || context == null) {
+            return;
+        }
+        Map<String, Object> eventValues = new HashMap<>();
+        eventValues.put(AFInAppEventParameterName.CONTENT_TYPE, contentType);
+        eventValues.put(AFInAppEventParameterName.CONTENT_ID, contentId);
+        AppsFlyerLib.getInstance().logEvent(context, AFInAppEventType.CONTENT_VIEW, eventValues);
+    }
+
+    public static void setCustomerUserId(String customerUserId) {
+        if (!enableAppsFlyer || TextUtils.isEmpty(customerUserId)) {
+            return;
+        }
+        AppsFlyerLib.getInstance().setCustomerUserId(customerUserId);
     }
 
     public static void logPaidAdImpression(Context context, double revenue, String currency, String adUnitId, String network) {

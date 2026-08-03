@@ -156,10 +156,27 @@ public class FireAntsLogEventManager {
         FireAntsAdjust.onTrackRevenue(eventName, revenue, currency);
     }
 
-    public static void onTrackRevenuePurchase(float revenue, String currency, String idPurchase, int typeIAP) {
+    public static void onTrackRevenuePurchase(float revenue, String currency, String idPurchase, int typeIAP,
+                                              String orderId, int quantity) {
         FireAntsAdjust.onTrackRevenuePurchase(revenue, currency);
         FireAntsAppsFlyer.onTrackRevenuePurchase(FireAntsAdSdk.getInstance().getAdConfig().getApplication(),
-                revenue, currency, idPurchase, typeIAP);
+                revenue, currency, idPurchase, typeIAP, orderId, quantity);
+    }
+
+    public static void logAppsFlyerLogin() {
+        FireAntsAppsFlyer.logLogin(FireAntsAdSdk.getInstance().getAdConfig().getApplication());
+    }
+
+    public static void logAppsFlyerContentView(String contentType, String contentId) {
+        FireAntsAppsFlyer.logContentView(FireAntsAdSdk.getInstance().getAdConfig().getApplication(), contentType, contentId);
+    }
+
+    public static void logAppsFlyerOpenPromotion() {
+        FireAntsAppsFlyer.logOpenPromotion(FireAntsAdSdk.getInstance().getAdConfig().getApplication());
+    }
+
+    public static void setAppsFlyerCustomerUserId(String customerUserId) {
+        FireAntsAppsFlyer.setCustomerUserId(customerUserId);
     }
 
     public static void pushTrackEventAdmob(AdValue adValue) {
