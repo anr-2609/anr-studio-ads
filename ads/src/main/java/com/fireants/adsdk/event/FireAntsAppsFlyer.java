@@ -138,6 +138,15 @@ public class FireAntsAppsFlyer {
         additionalParameters.put("mediation_network", network);
         additionalParameters.put("precision_source", EVENT_PAID_AD_IMPRESSION);
 
+        Log.d(TAG,
+                "AF logAdRevenue"
+                        + "\nrevenue=" + revenue
+                        + "\ncurrency=" + currency
+                        + "\nadUnitId=" + adUnitId
+                        + "\nnetwork=" + network
+                        + "\nmediation=" + MediationNetwork.GOOGLE_ADMOB
+                        + "\nparams=" + additionalParameters);
+
         AFAdRevenueData adRevenueData = new AFAdRevenueData(
                 network == null ? "admob" : network,
                 MediationNetwork.GOOGLE_ADMOB,
