@@ -30,6 +30,7 @@ import com.fireants.adsdk.ads.wrapper.ApNativeAd;
 import com.fireants.adsdk.billing.AppPurchase;
 import com.fireants.adsdk.config.FireAntsAdSdkConfig;
 import com.fireants.adsdk.event.FireAntsAdjust;
+import com.fireants.adsdk.event.FireAntsAppsFlyer;
 import com.fireants.adsdk.funtion.AdCallback;
 import com.fireants.adsdk.funtion.AdType;
 import com.fireants.adsdk.funtion.RewardCallback;
@@ -203,6 +204,9 @@ public class FireAntsAdSdk {
         if (adConfig.isEnableAdjust()) {
             FireAntsAdjust.enableAdjust = true;
             setupAdjust(adConfig.isVariantDev(), adConfig.getAdjustConfig().getAdjustToken());
+        }
+        if (adConfig.isEnableAppsFlyer()) {
+            FireAntsAppsFlyer.init(context, adConfig);
         }
 
         Admob.getInstance().init(context, adConfig.getListDeviceTest(), adConfig.getAdjustTokenTiktok());

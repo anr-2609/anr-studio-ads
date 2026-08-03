@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustEvent;
+import com.fireants.adsdk.ads.FireAntsAdSdk;
 import com.fireants.adsdk.util.AppUtil;
 import com.fireants.adsdk.util.SharePreferenceUtils;
 import com.facebook.appevents.AppEventsLogger;
@@ -13,6 +14,8 @@ import com.google.android.gms.ads.AdValue;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FireAntsLogEventManager {
 
@@ -21,6 +24,11 @@ public class FireAntsLogEventManager {
     public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName) {
         logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName);
         FireAntsAdjust.pushTrackEventAdmob(adValue);
+        FireAntsAppsFlyer.logPaidAdImpression(context,
+                adValue.getValueMicros() / 1000000.0,
+                adValue.getCurrencyCode(),
+                adUnitId,
+                mediationAdapterClassName);
         float value = adValue.getValueMicros() * 1.0f / 1000000 * 26000;
         AppEventsLogger.newLogger(context).logPurchase(BigDecimal.valueOf(value), Currency.getInstance("VND"));
     }
@@ -65,6 +73,7 @@ public class FireAntsLogEventManager {
 
 
         FireAntsAdjust.logPaidAdImpressionValue(value);
+        FireAntsAppsFlyer.logPaidAdImpressionValue(context, value, "USD", precision, adunitid, network);
         FirebaseAnalyticsUtil.logPaidAdImpressionValue(context, params);
 
         FacebookEventUtils.logPaidAdImpressionValue(context, params);
@@ -133,10 +142,14 @@ public class FireAntsLogEventManager {
 
     public static void onTrackEvent(String eventName) {
         FireAntsAdjust.onTrackEvent(eventName);
+        FireAntsAppsFlyer.onTrackEvent(FireAntsAdSdk.getInstance().getAdConfig().getApplication(), eventName);
     }
 
     public static void onTrackEvent(String eventName, String id) {
         FireAntsAdjust.onTrackEvent(eventName, id);
+        Map<String, Object> eventValues = new HashMap<>();
+        eventValues.put("callback_id", id);
+        FireAntsAppsFlyer.onTrackEvent(FireAntsAdSdk.getInstance().getAdConfig().getApplication(), eventName, eventValues);
     }
 
     public static void onTrackRevenue(String eventName, float revenue, String currency) {
@@ -145,6 +158,8 @@ public class FireAntsLogEventManager {
 
     public static void onTrackRevenuePurchase(float revenue, String currency, String idPurchase, int typeIAP) {
         FireAntsAdjust.onTrackRevenuePurchase(revenue, currency);
+        FireAntsAppsFlyer.onTrackRevenuePurchase(FireAntsAdSdk.getInstance().getAdConfig().getApplication(),
+                revenue, currency, idPurchase, typeIAP);
     }
 
     public static void pushTrackEventAdmob(AdValue adValue) {

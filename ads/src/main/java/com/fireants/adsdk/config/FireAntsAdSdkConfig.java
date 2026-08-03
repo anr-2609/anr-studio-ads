@@ -12,6 +12,7 @@ public class FireAntsAdSdkConfig {
     public static String ADJUST_TOKEN_TIKTOK = "client_token_adjust_tiktok";
     private boolean isVariantDev = false;
     private AdjustConfig adjustConfig;
+    private AppsFlyerConfig appsFlyerConfig;
     private String eventNamePurchase = "";
     private String idAdResume;
     private List<String> listDeviceTest = new ArrayList();
@@ -78,6 +79,14 @@ public class FireAntsAdSdkConfig {
         this.adjustConfig = adjustConfig;
     }
 
+    public AppsFlyerConfig getAppsFlyerConfig() {
+        return appsFlyerConfig;
+    }
+
+    public void setAppsFlyerConfig(AppsFlyerConfig appsFlyerConfig) {
+        this.appsFlyerConfig = appsFlyerConfig;
+    }
+
     public String getEventNamePurchase() {
         return eventNamePurchase;
     }
@@ -119,6 +128,13 @@ public class FireAntsAdSdkConfig {
         if (adjustConfig == null)
             return false;
         return adjustConfig.isEnableAdjust();
+    }
+
+    public Boolean isEnableAppsFlyer() {
+        if (appsFlyerConfig == null) {
+            return false;
+        }
+        return appsFlyerConfig.isEnableAppsFlyer();
     }
 
     public int getIntervalInterstitialAd() {

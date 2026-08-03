@@ -6,6 +6,7 @@ import com.fireants.adsdk.ads.FireAntsAdSdk;
 import com.fireants.adsdk.application.AdsMultiDexApplication;
 import com.fireants.adsdk.billing.AppPurchase;
 import com.fireants.adsdk.config.AdjustConfig;
+import com.fireants.adsdk.config.AppsFlyerConfig;
 import com.fireants.adsdk.config.FireAntsAdSdkConfig;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public class App extends AdsMultiDexApplication {
 
         AdjustConfig adjustConfig = new AdjustConfig(true,getString(R.string.adjust_token));
         mFireAntsAdSdkConfig.setAdjustConfig(adjustConfig);
+        AppsFlyerConfig appsFlyerConfig = new AppsFlyerConfig(true, getString(R.string.appsflyer_key), BuildConfig.DEBUG);
+        mFireAntsAdSdkConfig.setAppsFlyerConfig(appsFlyerConfig);
         mFireAntsAdSdkConfig.setFacebookClientToken(getString(R.string.facebook_client_token));
         mFireAntsAdSdkConfig.setAdjustTokenTiktok(getString(R.string.tiktok_token));
 

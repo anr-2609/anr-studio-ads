@@ -2,6 +2,7 @@
 - Admob
 - Mediation Admob (Facebook, Applovin, Vungle, Pangle, Mintegral)
 - Adjust
+- AppsFlyer
 - Firebase auto log tracking event, tROAS
 # Import Module
 ~~~
@@ -82,6 +83,8 @@ public class App extends AdsMultiDexApplication {
 
         AdjustConfig adjustConfig = new AdjustConfig(true,getString(R.string.adjust_token));
         mFireAntsAdSdkConfig.setAdjustConfig(adjustConfig);
+        AppsFlyerConfig appsFlyerConfig = new AppsFlyerConfig(true, getString(R.string.appsflyer_key), BuildConfig.DEBUG);
+        mFireAntsAdSdkConfig.setAppsFlyerConfig(appsFlyerConfig);
         mFireAntsAdSdkConfig.setFacebookClientToken(getString(R.string.facebook_client_token));
         mFireAntsAdSdkConfig.setAdjustTokenTiktok(getString(R.string.tiktok_token));
 
@@ -101,6 +104,16 @@ public class App extends AdsMultiDexApplication {
     }
 }
 ~~~
+
+# AppsFlyer
+~~~
+<string name="appsflyer_key" translatable="false">YOUR_APPSFLYER_KEY</string>
+~~~
+
+If you enable AppsFlyer in `AppsFlyerConfig`, the SDK will initialize AppsFlyer in parallel with Adjust and forward:
+- purchase events from Google Billing
+- paid ad impression revenue events
+- custom in-app events triggered via `FireAntsLogEventManager`
 
 # Ad Splash Interstitial
 ~~~   
@@ -239,8 +252,6 @@ AppPurchase.getInstance().setPurchaseListener(new PurchaseListener() {
 
 btnIap.setOnClickListener(v -> AppPurchase.getInstance().purchase(MainActivity.this, "android.test.purchased"));
 ~~~
-
-
 
 
 
