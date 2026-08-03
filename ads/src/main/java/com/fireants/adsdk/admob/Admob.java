@@ -400,7 +400,7 @@ public class Admob {
             FireAntsLogEventManager.logPaidAdImpression(context,
                     adValue,
                     mInterstitialSplash.getAdUnitId(),
-                    mInterstitialSplash.getResponseInfo().getMediationAdapterClassName());
+                    mInterstitialSplash.getResponseInfo().getMediationAdapterClassName(), AdType.INTERSTITIAL);
             if (tokenAdjust != null) {
                 FireAntsLogEventManager.logPaidAdjustWithToken(adValue, mInterstitialSplash.getAdUnitId(), tokenAdjust);
             }
@@ -550,7 +550,7 @@ public class Admob {
                     adValue,
                     mInterstitialSplash.getAdUnitId(),
                     mInterstitialSplash.getResponseInfo()
-                            .getMediationAdapterClassName());
+                            .getMediationAdapterClassName(), AdType.INTERSTITIAL);
 
             if (tokenAdjust != null) {
                 FireAntsLogEventManager.logPaidAdjustWithToken(adValue, mInterstitialSplash.getAdUnitId(), tokenAdjust);
@@ -708,7 +708,7 @@ public class Admob {
                                     adValue,
                                     interstitialAd.getAdUnitId(),
                                     interstitialAd.getResponseInfo()
-                                            .getMediationAdapterClassName());
+                                            .getMediationAdapterClassName(), AdType.INTERSTITIAL);
                             if (tokenAdjust != null) {
                                 FireAntsLogEventManager.logPaidAdjustWithToken(adValue, interstitialAd.getAdUnitId(), tokenAdjust);
                             }
@@ -1024,7 +1024,7 @@ public class Admob {
                             FireAntsLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
-                                    adView.getResponseInfo().getMediationAdapterClassName());
+                                    adView.getResponseInfo().getMediationAdapterClassName(), AdType.BANNER);
                             if (tokenAdjust != null) {
                                 FireAntsLogEventManager.logPaidAdjustWithToken(adValue, adView.getAdUnitId(), tokenAdjust);
                             }
@@ -1122,7 +1122,7 @@ public class Admob {
                         FireAntsLogEventManager.logPaidAdImpression(context,
                                 adValue,
                                 adView.getAdUnitId(),
-                                adView.getResponseInfo().getMediationAdapterClassName());
+                                adView.getResponseInfo().getMediationAdapterClassName(), AdType.BANNER);
                         if (tokenAdjust != null) {
                             FireAntsLogEventManager.logPaidAdjustWithToken(adValue, adView.getAdUnitId(), tokenAdjust);
                         }
@@ -1223,7 +1223,7 @@ public class Admob {
                         FireAntsLogEventManager.logPaidAdImpression(context,
                                 adValue,
                                 adView.getAdUnitId(),
-                                adView.getResponseInfo().getMediationAdapterClassName());
+                                adView.getResponseInfo().getMediationAdapterClassName(), AdType.BANNER);
                         if (tokenAdjust != null) {
                             FireAntsLogEventManager.logPaidAdjustWithToken(adValue, adView.getAdUnitId(), tokenAdjust);
                         }
@@ -1381,7 +1381,7 @@ public class Admob {
                     nativeAd.setOnPaidEventListener(adValue -> {
                         FireAntsLogEventManager.logPaidAdImpression(context,
                                 adValue,
-                                id, nativeAd.getResponseInfo().getMediationAdapterClassName());
+                                id, nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
                         if (tokenAdjust != null) {
                             FireAntsLogEventManager.logPaidAdjustWithToken(adValue, id, tokenAdjust);
                         }
@@ -1446,7 +1446,7 @@ public class Admob {
                         FireAntsLogEventManager.logPaidAdImpression(context,
                                 adValue,
                                 id,
-                                nativeAd.getResponseInfo().getMediationAdapterClassName());
+                                nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
                         if (tokenAdjust != null) {
                             FireAntsLogEventManager.logPaidAdjustWithToken(adValue, id, tokenAdjust);
                         }
@@ -1523,7 +1523,7 @@ public class Admob {
                         FireAntsLogEventManager.logPaidAdImpression(context,
                                 adValue,
                                 id,
-                                nativeAd.getResponseInfo().getMediationAdapterClassName());
+                                nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
                         if (tokenAdjust != null) {
                             FireAntsLogEventManager.logPaidAdjustWithToken(adValue, id, tokenAdjust);
                         }
@@ -1607,7 +1607,7 @@ public class Admob {
                         FireAntsLogEventManager.logPaidAdImpression(context,
                                 adValue,
                                 id,
-                                nativeAd.getResponseInfo().getMediationAdapterClassName());
+                                nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
                         if (tokenAdjust != null) {
                             FireAntsLogEventManager.logPaidAdjustWithToken(adValue, id, tokenAdjust);
                         }
@@ -1691,7 +1691,7 @@ public class Admob {
                         FireAntsLogEventManager.logPaidAdImpression(context,
                                 adValue,
                                 id,
-                                nativeAd.getResponseInfo().getMediationAdapterClassName());
+                                nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
                         if (tokenAdjust != null) {
                             FireAntsLogEventManager.logPaidAdjustWithToken(adValue, id, tokenAdjust);
                         }
@@ -2275,7 +2275,7 @@ public class Admob {
                 Admob.this.rewardedAd.setOnPaidEventListener(adValue -> {
                     FireAntsLogEventManager.logPaidAdImpression(context,
                             adValue,
-                            rewardedAd.getAdUnitId(), Admob.this.rewardedAd.getResponseInfo().getMediationAdapterClassName());
+                            rewardedAd.getAdUnitId(), Admob.this.rewardedAd.getResponseInfo().getMediationAdapterClassName(), AdType.REWARDED);
                     if (tokenAdjust != null) {
                         FireAntsLogEventManager.logPaidAdjustWithToken(adValue, rewardedAd.getAdUnitId(), tokenAdjust);
                     }
@@ -2310,7 +2310,7 @@ public class Admob {
                     FireAntsLogEventManager.logPaidAdImpression(context,
                             adValue,
                             rewardedAd.getAdUnitId(),
-                            Admob.this.rewardedAd.getResponseInfo().getMediationAdapterClassName());
+                            Admob.this.rewardedAd.getResponseInfo().getMediationAdapterClassName(), AdType.REWARDED);
                     if (tokenAdjust != null) {
                         FireAntsLogEventManager.logPaidAdjustWithToken(adValue, rewardedAd.getAdUnitId(), tokenAdjust);
                     }
@@ -2346,7 +2346,7 @@ public class Admob {
                     FireAntsLogEventManager.logPaidAdImpression(context,
                             adValue,
                             rewardedAd.getAdUnitId(),
-                            rewardedAd.getResponseInfo().getMediationAdapterClassName());
+                            rewardedAd.getResponseInfo().getMediationAdapterClassName(), AdType.REWARDED);
                     if (tokenAdjust != null) {
                         FireAntsLogEventManager.logPaidAdjustWithToken(adValue, rewardedAd.getAdUnitId(), tokenAdjust);
                     }

@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.applovin.mediation.MaxAd;
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustEvent;
 import com.fireants.adsdk.ads.FireAntsAdSdk;
+import com.fireants.adsdk.funtion.AdType;
 import com.fireants.adsdk.util.AppUtil;
 import com.fireants.adsdk.util.SharePreferenceUtils;
 import com.facebook.appevents.AppEventsLogger;
@@ -22,15 +24,24 @@ public class FireAntsLogEventManager {
     private static final String TAG = "FireAntsLogEventManager";
 
     public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName) {
+        logPaidAdImpression(context, adValue, adUnitId, mediationAdapterClassName, null);
+    }
+
+    public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
         logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName);
         FireAntsAdjust.pushTrackEventAdmob(adValue);
         FireAntsAppsFlyer.logPaidAdImpression(context,
                 adValue.getValueMicros() / 1000000.0,
                 adValue.getCurrencyCode(),
                 adUnitId,
-                mediationAdapterClassName);
-        float value = adValue.getValueMicros() * 1.0f / 1000000 * 26000;
-        AppEventsLogger.newLogger(context).logPurchase(BigDecimal.valueOf(value), Currency.getInstance("VND"));
+                mediationAdapterClassName,
+                adType);
+        float value = adValue.getValueMicros() * 1.0f / 1000000;
+        AppEventsLogger.newLogger(context).logPurchase(BigDecimal.valueOf(value), Currency.getInstance("USD"));
+    }
+
+    public static void logPaidAdImpression(Context context, MaxAd maxAd, AdType adType) {
+        FireAntsAppsFlyer.logPaidAdImpression(maxAd, adType);
     }
 
     public static void logPaidAdjustWithToken(AdValue adValue, String adUnitId, String token) {
@@ -73,7 +84,6 @@ public class FireAntsLogEventManager {
 
 
         FireAntsAdjust.logPaidAdImpressionValue(value);
-        FireAntsAppsFlyer.logPaidAdImpressionValue(context, value, "USD", precision, adunitid, network);
         FirebaseAnalyticsUtil.logPaidAdImpressionValue(context, params);
 
         FacebookEventUtils.logPaidAdImpressionValue(context, params);
@@ -167,6 +177,10 @@ public class FireAntsLogEventManager {
         FireAntsAppsFlyer.logLogin(FireAntsAdSdk.getInstance().getAdConfig().getApplication());
     }
 
+    public static void logAppsFlyerAddToCart(String contentId) {
+        FireAntsAppsFlyer.logAddToCart(FireAntsAdSdk.getInstance().getAdConfig().getApplication(), contentId);
+    }
+
     public static void logAppsFlyerContentView(String contentType, String contentId) {
         FireAntsAppsFlyer.logContentView(FireAntsAdSdk.getInstance().getAdConfig().getApplication(), contentType, contentId);
     }
@@ -177,6 +191,10 @@ public class FireAntsLogEventManager {
 
     public static void setAppsFlyerCustomerUserId(String customerUserId) {
         FireAntsAppsFlyer.setCustomerUserId(customerUserId);
+    }
+
+    public static void updateAppsFlyerServerUninstallToken(String uninstallToken) {
+        FireAntsAppsFlyer.updateServerUninstallToken(FireAntsAdSdk.getInstance().getAdConfig().getApplication(), uninstallToken);
     }
 
     public static void pushTrackEventAdmob(AdValue adValue) {

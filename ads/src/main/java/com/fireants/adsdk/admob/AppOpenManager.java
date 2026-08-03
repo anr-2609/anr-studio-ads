@@ -236,7 +236,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                 FireAntsLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
-                                        ad.getResponseInfo().getMediationAdapterClassName());
+                                        ad.getResponseInfo().getMediationAdapterClassName(), AdType.APP_OPEN);
                                 FireAntsLogEventManager.logPaidAdjustWithToken(adValue, ad.getAdUnitId(), FireAntsAdSdkConfig.ADJUST_TOKEN_TIKTOK);
                             });
                             AppOpenManager.this.appResumeLoadTime = (new Date()).getTime();
@@ -251,7 +251,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                 FireAntsLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
-                                        ad.getResponseInfo().getMediationAdapterClassName());
+                                        ad.getResponseInfo().getMediationAdapterClassName(), AdType.APP_OPEN);
                             });
                             AppOpenManager.this.splashLoadTime = (new Date()).getTime();
                         }
@@ -656,7 +656,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             FireAntsLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                     adValue,
                                     appOpenAd.getAdUnitId(),
-                                    appOpenAd.getResponseInfo().getMediationAdapterClassName());
+                                    appOpenAd.getResponseInfo().getMediationAdapterClassName(), AdType.APP_OPEN);
 
                             FireAntsLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), FireAntsAdSdkConfig.ADJUST_TOKEN_TIKTOK);
                             adListener.onAdLogRev(adValue, appOpenAd.getAdUnitId(), appOpenAd.getResponseInfo().getMediationAdapterClassName(), AdType.APP_OPEN);
@@ -768,7 +768,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             FireAntsLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                     adValue,
                                     appOpenAd.getAdUnitId(),
-                                    appOpenAd.getResponseInfo().getMediationAdapterClassName());
+                                    appOpenAd.getResponseInfo().getMediationAdapterClassName(), AdType.APP_OPEN);
                             FireAntsLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), FireAntsAdSdkConfig.ADJUST_TOKEN_TIKTOK);
                             adListener.onAdLogRev(adValue, appOpenAd.getAdUnitId(), appOpenAd.getResponseInfo().getMediationAdapterClassName(), AdType.APP_OPEN);
                         });
@@ -867,7 +867,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             FireAntsLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                     adValue,
                                     appOpenAd.getAdUnitId(),
-                                    appOpenAd.getResponseInfo().getMediationAdapterClassName());
+                                    appOpenAd.getResponseInfo().getMediationAdapterClassName(), AdType.APP_OPEN);
                             FireAntsLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), FireAntsAdSdkConfig.ADJUST_TOKEN_TIKTOK);
                             adListener.onAdLogRev(adValue, appOpenAd.getAdUnitId(), appOpenAd.getResponseInfo().getMediationAdapterClassName(), AdType.APP_OPEN);
                         });
@@ -935,7 +935,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             FireAntsLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                     adValue,
                                     appOpenAd.getAdUnitId(),
-                                    appOpenAd.getResponseInfo().getMediationAdapterClassName());
+                                    appOpenAd.getResponseInfo().getMediationAdapterClassName(), AdType.APP_OPEN);
                             FireAntsLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), FireAntsAdSdkConfig.ADJUST_TOKEN_TIKTOK);
                             adListener.onAdLogRev(adValue, appOpenAd.getAdUnitId(), appOpenAd.getResponseInfo().getMediationAdapterClassName(), AdType.APP_OPEN);
                         });
@@ -1073,7 +1073,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             FireAntsLogEventManager.logPaidAdImpression(activity,
                                     adValue,
                                     interstitialAd.getAdUnitId(),
-                                    interstitialAd.getResponseInfo().getMediationAdapterClassName());
+                                    interstitialAd.getResponseInfo().getMediationAdapterClassName(), AdType.INTERSTITIAL);
                             FireAntsLogEventManager.logPaidAdjustWithToken(adValue, interstitialAd.getAdUnitId(), FireAntsAdSdkConfig.ADJUST_TOKEN_TIKTOK);
                             adListener.onAdLogRev(adValue, interstitialAd.getAdUnitId(), interstitialAd.getResponseInfo().getMediationAdapterClassName(), AdType.INTERSTITIAL);
                         });
@@ -2377,4 +2377,3 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         }, 800);
     }
 }
-

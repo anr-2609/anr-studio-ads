@@ -4,27 +4,27 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.applovin.mediation.MaxAd;
 import com.appsflyer.AFAdRevenueData;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.appsflyer.MediationNetwork;
+import com.appsflyer.attribution.AppsFlyerRequestListener;
 import com.fireants.adsdk.config.FireAntsAdSdkConfig;
-import com.fireants.adsdk.util.SharePreferenceUtils;
+import com.fireants.adsdk.funtion.AdType;
 
 import java.util.HashMap;
+import java.util.Currency;
 import java.util.Locale;
 import java.util.Map;
 
 public class FireAntsAppsFlyer {
     private static final String TAG = "FireAntsAppsFlyer";
-    public static final String EVENT_APP_LAUNCH = "af_app_launch";
+    public static final String EVENT_ADD_TO_CART = AFInAppEventType.ADD_TO_CART;
     public static final String EVENT_OPEN_PROMOTION = "af_event_4";
-    private static final String EVENT_PAID_AD_IMPRESSION = "paid_ad_impression";
     private static final String EVENT_PAID_AD_IMPRESSION_VALUE = "paid_ad_impression_value";
-    private static final String KEY_AF_STATUS = "af_status";
-    private static final String KEY_MEDIA_SOURCE = "media_source";
 
     public static boolean enableAppsFlyer = false;
 
@@ -45,30 +45,9 @@ public class FireAntsAppsFlyer {
         }
 
         enableAppsFlyer = true;
-        AppsFlyerLib.getInstance().setDebugLog(config.getAppsFlyerConfig().isEnableDebug());
-        AppsFlyerLib.getInstance().init(appsFlyerKey, new AppsFlyerConversionListener() {
-            @Override
-            public void onConversionDataSuccess(Map<String, Object> conversionData) {
-                updateOrganicState(context, conversionData);
-            }
-
-            @Override
-            public void onConversionDataFail(String errorMessage) {
-                Log.w(TAG, "onConversionDataFail: " + errorMessage);
-            }
-
-            @Override
-            public void onAppOpenAttribution(Map<String, String> attributionData) {
-                Log.d(TAG, "onAppOpenAttribution: " + attributionData);
-            }
-
-            @Override
-            public void onAttributionFailure(String errorMessage) {
-                Log.w(TAG, "onAttributionFailure: " + errorMessage);
-            }
-        }, context);
+        AppsFlyerLib.getInstance().init(appsFlyerKey, (AppsFlyerConversionListener) null, context);
         AppsFlyerLib.getInstance().start(context);
-        logAppLaunch(context);
+        AppsFlyerLib.getInstance().setDebugLog(config.getAppsFlyerConfig().isEnableDebug());
     }
 
     public static void onTrackEvent(Context context, String eventName) {
@@ -91,20 +70,21 @@ public class FireAntsAppsFlyer {
         eventValues.put(AFInAppEventParameterName.REVENUE, revenue);
         eventValues.put(AFInAppEventParameterName.CURRENCY, currency);
         eventValues.put(AFInAppEventParameterName.CONTENT_ID, idPurchase);
-        eventValues.put(AFInAppEventParameterName.CONTENT_TYPE, typeIap == 0 ? "inapp" : "subs");
-        eventValues.put(AFInAppEventParameterName.QUANTITY, quantity);
-        if (!TextUtils.isEmpty(orderId)) {
-            eventValues.put(AFInAppEventParameterName.ORDER_ID, orderId);
-        }
-        AppsFlyerLib.getInstance().logEvent(context, AFInAppEventType.PURCHASE, eventValues);
-    }
-
-    public static void logAppLaunch(Context context) {
-        onTrackEvent(context, EVENT_APP_LAUNCH);
+        eventValues.put(AFInAppEventParameterName.CONTENT_TYPE, typeIap == 1 ? "inapp" : "subs");
+        AppsFlyerLib.getInstance().logEvent(context, AFInAppEventType.PURCHASE, eventValues, createRequestListener(AFInAppEventType.PURCHASE, idPurchase));
     }
 
     public static void logLogin(Context context) {
         onTrackEvent(context, AFInAppEventType.LOGIN);
+    }
+
+    public static void logAddToCart(Context context, String contentId) {
+        if (!enableAppsFlyer || context == null || TextUtils.isEmpty(contentId)) {
+            return;
+        }
+        Map<String, Object> eventValues = new HashMap<>();
+        eventValues.put(AFInAppEventParameterName.CONTENT_ID, contentId);
+        AppsFlyerLib.getInstance().logEvent(context, EVENT_ADD_TO_CART, eventValues, createRequestListener(EVENT_ADD_TO_CART, contentId));
     }
 
     public static void logOpenPromotion(Context context) {
@@ -128,29 +108,49 @@ public class FireAntsAppsFlyer {
         AppsFlyerLib.getInstance().setCustomerUserId(customerUserId);
     }
 
+    public static void updateServerUninstallToken(Context context, String uninstallToken) {
+        if (!enableAppsFlyer || context == null || TextUtils.isEmpty(uninstallToken)) {
+            return;
+        }
+        AppsFlyerLib.getInstance().updateServerUninstallToken(context, uninstallToken);
+    }
+
     public static void logPaidAdImpression(Context context, double revenue, String currency, String adUnitId, String network) {
+        logPaidAdImpression(context, revenue, currency, adUnitId, network, null);
+    }
+
+    public static void logPaidAdImpression(Context context, double revenue, String currency, String adUnitId, String network, AdType adType) {
         if (!enableAppsFlyer || context == null) {
             return;
         }
 
         Map<String, Object> additionalParameters = new HashMap<>();
-        additionalParameters.put("ad_unit_id", adUnitId);
-        additionalParameters.put("mediation_network", network);
-        additionalParameters.put("precision_source", EVENT_PAID_AD_IMPRESSION);
-
-        Log.d(TAG,
-                "AF logAdRevenue"
-                        + "\nrevenue=" + revenue
-                        + "\ncurrency=" + currency
-                        + "\nadUnitId=" + adUnitId
-                        + "\nnetwork=" + network
-                        + "\nmediation=" + MediationNetwork.GOOGLE_ADMOB
-                        + "\nparams=" + additionalParameters);
+        additionalParameters.put("ad_unit", adUnitId);
+        additionalParameters.put("ad_type", adType == null ? null : adType.toString());
 
         AFAdRevenueData adRevenueData = new AFAdRevenueData(
                 network == null ? "admob" : network,
                 MediationNetwork.GOOGLE_ADMOB,
                 currency,
+                revenue
+        );
+        AppsFlyerLib.getInstance().logAdRevenue(adRevenueData, additionalParameters);
+    }
+
+    public static void logPaidAdImpression(MaxAd maxAd, AdType adType) {
+        if (!enableAppsFlyer || maxAd == null) {
+            return;
+        }
+
+        double revenue = maxAd.getRevenue();
+        Map<String, Object> additionalParameters = new HashMap<>();
+        additionalParameters.put("ad_unit", maxAd.getAdUnitId());
+        additionalParameters.put("ad_type", adType == null ? null : adType.toString());
+
+        AFAdRevenueData adRevenueData = new AFAdRevenueData(
+                "applovinmax",
+                MediationNetwork.APPLOVIN_MAX,
+                Currency.getInstance(Locale.US).toString(),
                 revenue
         );
         AppsFlyerLib.getInstance().logAdRevenue(adRevenueData, additionalParameters);
@@ -170,16 +170,17 @@ public class FireAntsAppsFlyer {
         AppsFlyerLib.getInstance().logEvent(context, EVENT_PAID_AD_IMPRESSION_VALUE, eventValues);
     }
 
-    private static void updateOrganicState(Context context, Map<String, Object> conversionData) {
-        if (context == null || conversionData == null) {
-            return;
-        }
+    private static AppsFlyerRequestListener createRequestListener(String eventName, String referenceValue) {
+        return new AppsFlyerRequestListener() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, eventName + " success: " + referenceValue);
+            }
 
-        Object afStatus = conversionData.get(KEY_AF_STATUS);
-        Object mediaSource = conversionData.get(KEY_MEDIA_SOURCE);
-        boolean organic = "Organic".equalsIgnoreCase(String.valueOf(afStatus))
-                || "organic".equalsIgnoreCase(String.valueOf(mediaSource));
-        SharePreferenceUtils.setIsOrganic(context, organic);
-        Log.d(TAG, String.format(Locale.US, "AppsFlyer organic=%s conversionData=%s", organic, conversionData));
+            @Override
+            public void onError(int code, String description) {
+                Log.w(TAG, eventName + " error=" + code + " message=" + description + " reference=" + referenceValue);
+            }
+        };
     }
 }

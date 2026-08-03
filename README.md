@@ -114,13 +114,16 @@ If you enable AppsFlyer in `AppsFlyerConfig`, the SDK will initialize AppsFlyer 
 - purchase events from Google Billing
 - paid ad impression revenue events
 - custom in-app events triggered via `FireAntsLogEventManager`
+- uninstall token updates when the app forwards its push token
 
 Optional helper methods for AppsFlyer events:
 ~~~
 FireAntsAdSdk.getInstance().setAppsFlyerCustomerUserId("user_123");
 FireAntsAdSdk.getInstance().logAppsFlyerLogin();
+FireAntsAdSdk.getInstance().logAppsFlyerAddToCart("A187630");
 FireAntsAdSdk.getInstance().logAppsFlyerContentView("Accessories", "A187630");
 FireAntsAdSdk.getInstance().logAppsFlyerOpenPromotion();
+FireAntsAdSdk.getInstance().updateAppsFlyerServerUninstallToken("FCM_DEVICE_TOKEN");
 ~~~
 
 # Ad Splash Interstitial
@@ -260,7 +263,6 @@ AppPurchase.getInstance().setPurchaseListener(new PurchaseListener() {
 
 btnIap.setOnClickListener(v -> AppPurchase.getInstance().purchase(MainActivity.this, "android.test.purchased"));
 ~~~
-
 
 
 

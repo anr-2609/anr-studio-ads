@@ -177,12 +177,20 @@ public class FireAntsAdSdk {
         FireAntsAppsFlyer.logLogin(adConfig.getApplication());
     }
 
+    public void logAppsFlyerAddToCart(String contentId) {
+        FireAntsAppsFlyer.logAddToCart(adConfig.getApplication(), contentId);
+    }
+
     public void logAppsFlyerContentView(String contentType, String contentId) {
         FireAntsAppsFlyer.logContentView(adConfig.getApplication(), contentType, contentId);
     }
 
     public void logAppsFlyerOpenPromotion() {
         FireAntsAppsFlyer.logOpenPromotion(adConfig.getApplication());
+    }
+
+    public void updateAppsFlyerServerUninstallToken(String uninstallToken) {
+        FireAntsAppsFlyer.updateServerUninstallToken(adConfig.getApplication(), uninstallToken);
     }
 
     public int getResumeLoadingDialogLayout() {

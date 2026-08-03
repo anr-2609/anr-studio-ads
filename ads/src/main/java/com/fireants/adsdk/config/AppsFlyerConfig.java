@@ -4,6 +4,7 @@ public class AppsFlyerConfig {
     private boolean enableAppsFlyer = false;
     private String appsFlyerKey = "";
     private boolean enableDebug = false;
+    private String eventAdImpression = "";
 
     public AppsFlyerConfig(boolean enableAppsFlyer) {
         this.enableAppsFlyer = enableAppsFlyer;
@@ -42,5 +43,13 @@ public class AppsFlyerConfig {
 
     public void setEnableDebug(boolean enableDebug) {
         this.enableDebug = enableDebug;
+    }
+
+    public String getEventAdImpression() {
+        return eventAdImpression;
+    }
+
+    public void setEventAdImpression(String eventAdImpression) {
+        this.eventAdImpression = eventAdImpression;
     }
 }
