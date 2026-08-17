@@ -28,6 +28,7 @@ public class FireAntsAppsFlyer {
     private static final String EVENT_PAID_AD_IMPRESSION_VALUE = "paid_ad_impression_value";
     private static final String AF_STATUS = "af_status";
     private static final String AF_STATUS_ORGANIC = "Organic";
+    private static final String AF_STATUS_NON_ORGANIC = "Non-organic";
 
     public static boolean enableAppsFlyer = false;
 
@@ -57,19 +58,33 @@ public class FireAntsAppsFlyer {
         return new AppsFlyerConversionListener() {
             @Override
             public void onConversionDataSuccess(Map<String, Object> conversionData) {
-                if (context == null || conversionData == null) {
+                if (context == null) {
+                    return;
+                }
+                if (conversionData == null) {
+                    SharePreferenceUtils.setIsOrganic(context, false);
                     return;
                 }
 
-                Object status = conversionData.get(AF_STATUS);
-                boolean organic = status != null && AF_STATUS_ORGANIC.equalsIgnoreCase(String.valueOf(status));
-                SharePreferenceUtils.setIsOrganic(context, organic);
-                Log.d(TAG, "AppsFlyer attribution status=" + status + ", organic=" + organic);
+                String status = String.valueOf(conversionData.get(AF_STATUS));
+                if (AF_STATUS_ORGANIC.equalsIgnoreCase(status)) {
+                    SharePreferenceUtils.setIsOrganic(context, true);
+                    Log.d(TAG, "AppsFlyer attribution status=" + status + ", organic=true");
+                } else if (AF_STATUS_NON_ORGANIC.equalsIgnoreCase(status)) {
+                    SharePreferenceUtils.setIsOrganic(context, false);
+                    Log.d(TAG, "AppsFlyer attribution status=" + status + ", organic=false");
+                } else {
+                    SharePreferenceUtils.setIsOrganic(context, false);
+                    Log.w(TAG, "AppsFlyer attribution status missing or unknown: " + status + ", fallback to organic=false");
+                }
             }
 
             @Override
             public void onConversionDataFail(String errorMessage) {
-                Log.w(TAG, "AppsFlyer conversion data failed: " + errorMessage);
+                if (context != null) {
+                    SharePreferenceUtils.setIsOrganic(context, false);
+                }
+                Log.w(TAG, "AppsFlyer conversion data failed: " + errorMessage + ", fallback to organic=false");
             }
 
             @Override
