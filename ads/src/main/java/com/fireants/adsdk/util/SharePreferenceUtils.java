@@ -20,6 +20,8 @@ public class SharePreferenceUtils {
 
     private final static String KEY_IS_ORGANIC = "KEY_IS_ORGANIC";
 
+    private final static String KEY_ATTRIBUTION_SAVED = "KEY_ATTRIBUTION_SAVED";
+
     public static long getInstallTime(Context context) {
         SharedPreferences pre = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return pre.getLong(KEY_INSTALL_TIME, 0);
@@ -90,5 +92,18 @@ public class SharePreferenceUtils {
     public static void setIsOrganic(Context context, boolean isOrganic) {
         SharedPreferences pre = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         pre.edit().putBoolean(KEY_IS_ORGANIC, isOrganic).apply();
+    }
+
+    public static boolean isAttributionSaved(Context context) {
+        SharedPreferences pre = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return pre.getBoolean(KEY_ATTRIBUTION_SAVED, false);
+    }
+
+    public static void saveAttribution(Context context, boolean isOrganic) {
+        SharedPreferences pre = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        pre.edit()
+                .putBoolean(KEY_IS_ORGANIC, isOrganic)
+                .putBoolean(KEY_ATTRIBUTION_SAVED, true)
+                .apply();
     }
 }

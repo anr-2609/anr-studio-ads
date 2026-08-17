@@ -61,30 +61,33 @@ public class FireAntsAppsFlyer {
                 if (context == null) {
                     return;
                 }
+
                 if (conversionData == null) {
-                    SharePreferenceUtils.setIsOrganic(context, false);
+                    Log.w(TAG, "AppsFlyer conversion data is null, keep previous attribution");
+                    return;
+                }
+
+                if (SharePreferenceUtils.isAttributionSaved(context)) {
+                    Log.d(TAG, "AppsFlyer attribution already saved, ignore cached callback");
                     return;
                 }
 
                 String status = String.valueOf(conversionData.get(AF_STATUS));
+
                 if (AF_STATUS_ORGANIC.equalsIgnoreCase(status)) {
-                    SharePreferenceUtils.setIsOrganic(context, true);
-                    Log.d(TAG, "AppsFlyer attribution status=" + status + ", organic=true");
+                    SharePreferenceUtils.saveAttribution(context, true);
+                    Log.d(TAG, "AppsFlyer attribution saved: status=" + status + ", organic=true");
                 } else if (AF_STATUS_NON_ORGANIC.equalsIgnoreCase(status)) {
-                    SharePreferenceUtils.setIsOrganic(context, false);
-                    Log.d(TAG, "AppsFlyer attribution status=" + status + ", organic=false");
+                    SharePreferenceUtils.saveAttribution(context, false);
+                    Log.d(TAG, "AppsFlyer attribution saved: status=" + status + ", organic=false");
                 } else {
-                    SharePreferenceUtils.setIsOrganic(context, false);
-                    Log.w(TAG, "AppsFlyer attribution status missing or unknown: " + status + ", fallback to organic=false");
+                    Log.w(TAG, "AppsFlyer attribution status missing or unknown: " + status + ", keep previous attribution");
                 }
             }
 
             @Override
             public void onConversionDataFail(String errorMessage) {
-                if (context != null) {
-                    SharePreferenceUtils.setIsOrganic(context, false);
-                }
-                Log.w(TAG, "AppsFlyer conversion data failed: " + errorMessage + ", fallback to organic=false");
+                Log.w(TAG, "AppsFlyer conversion data failed: " + errorMessage + ", keep previous attribution");
             }
 
             @Override
@@ -107,6 +110,7 @@ public class FireAntsAppsFlyer {
         if (!enableAppsFlyer || context == null || TextUtils.isEmpty(eventName)) {
             return;
         }
+
         AppsFlyerLib.getInstance().logEvent(context, eventName, eventValues);
     }
 
@@ -115,6 +119,7 @@ public class FireAntsAppsFlyer {
         if (!enableAppsFlyer || context == null) {
             return;
         }
+
         Map<String, Object> eventValues = new HashMap<>();
         eventValues.put(AFInAppEventParameterName.REVENUE, revenue);
         eventValues.put(AFInAppEventParameterName.CURRENCY, currency);
@@ -131,6 +136,7 @@ public class FireAntsAppsFlyer {
         if (!enableAppsFlyer || context == null || TextUtils.isEmpty(contentId)) {
             return;
         }
+
         Map<String, Object> eventValues = new HashMap<>();
         eventValues.put(AFInAppEventParameterName.CONTENT_ID, contentId);
         AppsFlyerLib.getInstance().logEvent(context, EVENT_ADD_TO_CART, eventValues, createRequestListener(EVENT_ADD_TO_CART, contentId));
@@ -144,6 +150,7 @@ public class FireAntsAppsFlyer {
         if (!enableAppsFlyer || context == null) {
             return;
         }
+
         Map<String, Object> eventValues = new HashMap<>();
         eventValues.put(AFInAppEventParameterName.CONTENT_TYPE, contentType);
         eventValues.put(AFInAppEventParameterName.CONTENT_ID, contentId);
@@ -154,6 +161,7 @@ public class FireAntsAppsFlyer {
         if (!enableAppsFlyer || TextUtils.isEmpty(customerUserId)) {
             return;
         }
+
         AppsFlyerLib.getInstance().setCustomerUserId(customerUserId);
     }
 
@@ -161,6 +169,7 @@ public class FireAntsAppsFlyer {
         if (!enableAppsFlyer || context == null || TextUtils.isEmpty(uninstallToken)) {
             return;
         }
+
         AppsFlyerLib.getInstance().updateServerUninstallToken(context, uninstallToken);
     }
 
@@ -183,6 +192,7 @@ public class FireAntsAppsFlyer {
                 currency,
                 revenue
         );
+
         AppsFlyerLib.getInstance().logAdRevenue(adRevenueData, additionalParameters);
     }
 
@@ -202,6 +212,7 @@ public class FireAntsAppsFlyer {
                 Currency.getInstance(Locale.US).toString(),
                 revenue
         );
+
         AppsFlyerLib.getInstance().logAdRevenue(adRevenueData, additionalParameters);
     }
 
