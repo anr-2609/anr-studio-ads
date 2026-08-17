@@ -14,6 +14,7 @@ import com.appsflyer.MediationNetwork;
 import com.appsflyer.attribution.AppsFlyerRequestListener;
 import com.fireants.adsdk.config.FireAntsAdSdkConfig;
 import com.fireants.adsdk.funtion.AdType;
+import com.fireants.adsdk.util.SharePreferenceUtils;
 
 import java.util.HashMap;
 import java.util.Currency;
@@ -25,6 +26,8 @@ public class FireAntsAppsFlyer {
     public static final String EVENT_ADD_TO_CART = AFInAppEventType.ADD_TO_CART;
     public static final String EVENT_OPEN_PROMOTION = "af_event_4";
     private static final String EVENT_PAID_AD_IMPRESSION_VALUE = "paid_ad_impression_value";
+    private static final String AF_STATUS = "af_status";
+    private static final String AF_STATUS_ORGANIC = "Organic";
 
     public static boolean enableAppsFlyer = false;
 
@@ -45,9 +48,40 @@ public class FireAntsAppsFlyer {
         }
 
         enableAppsFlyer = true;
-        AppsFlyerLib.getInstance().init(appsFlyerKey, (AppsFlyerConversionListener) null, context);
-        AppsFlyerLib.getInstance().start(context);
         AppsFlyerLib.getInstance().setDebugLog(config.getAppsFlyerConfig().isEnableDebug());
+        AppsFlyerLib.getInstance().init(appsFlyerKey, createConversionListener(context), context);
+        AppsFlyerLib.getInstance().start(context);
+    }
+
+    private static AppsFlyerConversionListener createConversionListener(Context context) {
+        return new AppsFlyerConversionListener() {
+            @Override
+            public void onConversionDataSuccess(Map<String, Object> conversionData) {
+                if (context == null || conversionData == null) {
+                    return;
+                }
+
+                Object status = conversionData.get(AF_STATUS);
+                boolean organic = status != null && AF_STATUS_ORGANIC.equalsIgnoreCase(String.valueOf(status));
+                SharePreferenceUtils.setIsOrganic(context, organic);
+                Log.d(TAG, "AppsFlyer attribution status=" + status + ", organic=" + organic);
+            }
+
+            @Override
+            public void onConversionDataFail(String errorMessage) {
+                Log.w(TAG, "AppsFlyer conversion data failed: " + errorMessage);
+            }
+
+            @Override
+            public void onAppOpenAttribution(Map<String, String> attributionData) {
+                Log.d(TAG, "AppsFlyer app open attribution: " + attributionData);
+            }
+
+            @Override
+            public void onAttributionFailure(String errorMessage) {
+                Log.w(TAG, "AppsFlyer attribution failed: " + errorMessage);
+            }
+        };
     }
 
     public static void onTrackEvent(Context context, String eventName) {

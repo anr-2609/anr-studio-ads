@@ -27,7 +27,6 @@ import com.fireants.adsdk.ads.wrapper.ApInterstitialAd;
 import com.fireants.adsdk.ads.wrapper.ApInterstitialPriority2Ad;
 import com.fireants.adsdk.ads.wrapper.ApInterstitialPriorityAd;
 import com.fireants.adsdk.ads.wrapper.ApNativeAd;
-import com.fireants.adsdk.billing.AppPurchase;
 import com.fireants.adsdk.config.FireAntsAdSdkConfig;
 import com.fireants.adsdk.event.FireAntsAdjust;
 import com.fireants.adsdk.event.FireAntsAppsFlyer;
@@ -72,89 +71,49 @@ public class FireAntsAdSdk {
         return SharePreferenceUtils.getIsOrganic(adConfig.getApplication());
     }
 
-    public void setNoAdsUser(boolean isNoAdsUser) {
-        AppPurchase.getInstance().setPurchase(isNoAdsUser);
+    public Boolean getShouldDisplayNativeOnboardingNormal1() {
+        return !getOrganic();
     }
 
-    public boolean isNoAdsUser() {
-        return AppPurchase.getInstance().isPurchased();
+    public Boolean getShouldDisplayNativeOnboardingFull1() {
+        return !getOrganic();
     }
 
-    public Boolean getShouldDisplayNativeOnboardingNormal1(boolean isForceOrganic) {
-        if (isForceOrganic) {
-            return !getOrganic();
-        }
-        return true;
+    public Boolean getShouldDisplayNativeOnboardingFull2() {
+        return !getOrganic();
     }
 
-    public Boolean getShouldDisplayNativeOnboardingFull1(boolean isForceOrganic) {
-        if (isForceOrganic) {
-            return !getOrganic();
-        }
-        return true;
+    public Boolean getShouldDisplayNativeOnboardingNormal2() {
+        return !getOrganic();
     }
 
-    public Boolean getShouldDisplayNativeOnboardingFull2(boolean isForceOrganic) {
-        if (isForceOrganic) {
-            return !getOrganic();
-        }
-        return true;
+    public Boolean getShouldDisplayNativeHome() {
+        return !getOrganic();
     }
 
-    public Boolean getShouldDisplayNativeOnboardingNormal2(boolean isForceOrganic) {
-        if (isForceOrganic) {
-            return !getOrganic();
-        }
-        return true;
+    public Boolean getShouldDisplayNativePermission() {
+        return !getOrganic();
     }
 
-    public Boolean getShouldDisplayNativeHome(boolean isForceOrganic) {
-        if (isForceOrganic) {
-            return !getOrganic();
-        }
-        return true;
+    public Boolean getShouldDisplayInterOnboarding() {
+        return !getOrganic();
     }
 
-    public Boolean getShouldDisplayNativePermission(boolean isForceOrganic) {
-        if (isForceOrganic) {
-            return !getOrganic();
-        }
-        return true;
+    public Boolean getShouldDisplayNativeWelcomeBack() {
+        return !getOrganic();
     }
 
-    public Boolean getShouldDisplayInterOnboarding(boolean isForceOrganic) {
-        if (isForceOrganic) {
-            return !getOrganic();
-        }
-        return true;
+    public Boolean getShouldDisplayInterWelcomeBack() {
+        return !getOrganic();
     }
 
-    public Boolean getShouldDisplayNativeWelcomeBack(boolean isForceOrganic) {
-        if (isForceOrganic) {
-            return !getOrganic();
-        }
-        return true;
+
+    public Boolean getShouldDisplayWidgetUninstall() {
+        return !getOrganic();
     }
 
-    public Boolean getShouldDisplayInterWelcomeBack(boolean isForceOrganic) {
-        if (isForceOrganic) {
-            return !getOrganic();
-        }
-        return true;
-    }
-
-    public Boolean getShouldDisplayWidgetUninstall(boolean isForceOrganic) {
-        if (isForceOrganic) {
-            return !getOrganic();
-        }
-        return true;
-    }
-
-    public Boolean getShouldDisplayHighCTA(boolean isForceOrganic) {
-        if (isForceOrganic) {
-            return !getOrganic();
-        }
-        return true;
+    public Boolean getShouldDisplayHighCTA() {
+        return !getOrganic();
     }
 
     public FireAntsAdSdkConfig getAdConfig() {
