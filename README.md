@@ -1,4 +1,4 @@
-# FireAnts Studio
+# ANR Studio
 - Admob
 - Mediation Admob (Facebook, Applovin, Vungle, Pangle, Mintegral)
 - Adjust
@@ -13,7 +13,7 @@
         maven {
             url 'https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea'
         }
-    implementation 'com.github.FireAnts:fireants-ads-sdk:$version'
+    implementation 'com.github.ANR:anrstudio-ads-sdk:$version'
     implementation 'com.google.android.play:core:1.10.3'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation 'com.google.android.gms:play-services-ads:24.7.0'
@@ -78,19 +78,19 @@ public class App extends AdsMultiDexApplication {
     }
 
     private void initAds() {
-        String environment = BuildConfig.DEBUG ? FireAntsAdSdkConfig.ENVIRONMENT_DEVELOP : FireAntsAdSdkConfig.ENVIRONMENT_PRODUCTION;
-        mFireAntsAdSdkConfig = new FireAntsAdSdkConfig(this, environment);
+        String environment = BuildConfig.DEBUG ? ANRAdSdkConfig.ENVIRONMENT_DEVELOP : ANRAdSdkConfig.ENVIRONMENT_PRODUCTION;
+        mANRAdSdkConfig = new ANRAdSdkConfig(this, environment);
 
         AdjustConfig adjustConfig = new AdjustConfig(true,getString(R.string.adjust_token));
-        mFireAntsAdSdkConfig.setAdjustConfig(adjustConfig);
+        mANRAdSdkConfig.setAdjustConfig(adjustConfig);
         AppsFlyerConfig appsFlyerConfig = new AppsFlyerConfig(true, getString(R.string.appsflyer_key), BuildConfig.DEBUG);
-        mFireAntsAdSdkConfig.setAppsFlyerConfig(appsFlyerConfig);
-        mFireAntsAdSdkConfig.setFacebookClientToken(getString(R.string.facebook_client_token));
-        mFireAntsAdSdkConfig.setAdjustTokenTiktok(getString(R.string.tiktok_token));
+        mANRAdSdkConfig.setAppsFlyerConfig(appsFlyerConfig);
+        mANRAdSdkConfig.setFacebookClientToken(getString(R.string.facebook_client_token));
+        mANRAdSdkConfig.setAdjustTokenTiktok(getString(R.string.tiktok_token));
 
-        mFireAntsAdSdkConfig.setIdAdResume("");
+        mANRAdSdkConfig.setIdAdResume("");
 
-        FireAntsAdSdk.getInstance().init(this, mFireAntsAdSdkConfig);
+        ANRAdSdk.getInstance().init(this, mANRAdSdkConfig);
         Admob.getInstance().setDisableAdResumeWhenClickAds(true);
         Admob.getInstance().setOpenActivityAfterShowInterAds(true);
         AppOpenManager.getInstance().disableAppResumeWithActivity(MainActivity.class);
@@ -113,22 +113,22 @@ public class App extends AdsMultiDexApplication {
 If you enable AppsFlyer in `AppsFlyerConfig`, the SDK will initialize AppsFlyer in parallel with Adjust and forward:
 - purchase events from Google Billing
 - paid ad impression revenue events
-- custom in-app events triggered via `FireAntsLogEventManager`
+- custom in-app events triggered via `ANRLogEventManager`
 - uninstall token updates when the app forwards its push token
 
 Optional helper methods for AppsFlyer events:
 ~~~
-FireAntsAdSdk.getInstance().setAppsFlyerCustomerUserId("user_123");
-FireAntsAdSdk.getInstance().logAppsFlyerLogin();
-FireAntsAdSdk.getInstance().logAppsFlyerAddToCart("A187630");
-FireAntsAdSdk.getInstance().logAppsFlyerContentView("Accessories", "A187630");
-FireAntsAdSdk.getInstance().logAppsFlyerOpenPromotion();
-FireAntsAdSdk.getInstance().updateAppsFlyerServerUninstallToken("FCM_DEVICE_TOKEN");
+ANRAdSdk.getInstance().setAppsFlyerCustomerUserId("user_123");
+ANRAdSdk.getInstance().logAppsFlyerLogin();
+ANRAdSdk.getInstance().logAppsFlyerAddToCart("A187630");
+ANRAdSdk.getInstance().logAppsFlyerContentView("Accessories", "A187630");
+ANRAdSdk.getInstance().logAppsFlyerOpenPromotion();
+ANRAdSdk.getInstance().updateAppsFlyerServerUninstallToken("FCM_DEVICE_TOKEN");
 ~~~
 
 # Ad Splash Interstitial
 ~~~   
-FireAntsAdSdk.getInstance().loadSplashInterstitialAds(this, BuildConfig.ad_interstitial_splash, 25000, 5000, new AdCallback() {
+ANRAdSdk.getInstance().loadSplashInterstitialAds(this, BuildConfig.ad_interstitial_splash, 25000, 5000, new AdCallback() {
             @Override
             public void onNextAction() {
                 super.onNextAction();
@@ -140,17 +140,17 @@ FireAntsAdSdk.getInstance().loadSplashInterstitialAds(this, BuildConfig.ad_inter
 
 # Ad Banner
 ~~~   
-FireAntsAdSdk.getInstance().loadBanner(this, BuildConfig.ad_banner);
+ANRAdSdk.getInstance().loadBanner(this, BuildConfig.ad_banner);
 ~~~   
 
 # Ad Collapsible Banner
 ~~~   
-FireAntsAdSdk.getInstance().loadCollapsibleBanner(this, BuildConfig.ad_banner, AppConstant.CollapsibleGravity.BOTTOM, new AdCallback());
+ANRAdSdk.getInstance().loadCollapsibleBanner(this, BuildConfig.ad_banner, AppConstant.CollapsibleGravity.BOTTOM, new AdCallback());
 ~~~   
 
 # Native: Load And Show
 ~~~   
-FireAntsAdSdk.getInstance().loadNativeAd(this, BuildConfig.ad_native, R.layout.native_large, frAds, shimmerAds, new AdCallback() {
+ANRAdSdk.getInstance().loadNativeAd(this, BuildConfig.ad_native, R.layout.native_large, frAds, shimmerAds, new AdCallback() {
             @Override
             public void onAdFailedToLoad(@Nullable LoadAdError i) {
                 super.onAdFailedToLoad(i);
@@ -168,7 +168,7 @@ FireAntsAdSdk.getInstance().loadNativeAd(this, BuildConfig.ad_native, R.layout.n
 # Native: Load
 ~~~   
 private ApNativeAd mApNativeAd;
-FireAntsAdSdk.getInstance().loadNativeAdResultCallback(this, BuildConfig.ad_native, R.layout.native_large, new AdCallback() {
+ANRAdSdk.getInstance().loadNativeAdResultCallback(this, BuildConfig.ad_native, R.layout.native_large, new AdCallback() {
             @Override
             public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
                 super.onNativeAdLoaded(nativeAd);
@@ -195,14 +195,14 @@ FireAntsAdSdk.getInstance().loadNativeAdResultCallback(this, BuildConfig.ad_nati
 # Native: Show
 ~~~   
 if (mApNativeAd != null) {
-            FireAntsAdSdk.getInstance().populateNativeAdView(this, mApNativeAd, frAds, shimmerAds);
+            ANRAdSdk.getInstance().populateNativeAdView(this, mApNativeAd, frAds, shimmerAds);
         }
 ~~~
 
 # Reward: Load
 ~~~
 private RewardedAd rewardedAds;
-FireAntsAdSdk.getInstance().initRewardAds(this, BuildConfig.ad_reward, new AdCallback() {
+ANRAdSdk.getInstance().initRewardAds(this, BuildConfig.ad_reward, new AdCallback() {
                 @Override
                 public void onRewardAdLoaded(RewardedAd rewardedAd) {
                     super.onRewardAdLoaded(rewardedAd);
@@ -216,7 +216,7 @@ FireAntsAdSdk.getInstance().initRewardAds(this, BuildConfig.ad_reward, new AdCal
 private boolean isEarn = false;
 btnShowReward.setOnClickListener(v -> {
             isEarn = false;
-            FireAntsAdSdk.getInstance().showRewardAds(MainActivity.this, rewardedAds, new RewardCallback() {
+            ANRAdSdk.getInstance().showRewardAds(MainActivity.this, rewardedAds, new RewardCallback() {
                 @Override
                 public void onUserEarnedReward(RewardItem var1) {
                     isEarn = true;
