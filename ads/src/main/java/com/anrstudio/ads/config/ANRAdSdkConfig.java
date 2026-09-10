@@ -24,6 +24,7 @@ public class ANRAdSdkConfig {
     private boolean enableFirebasePurchaseTracking = false;
     private boolean enableFirebaseAdImpressionTracking = false;
     private boolean enableFirebaseCustomEventTracking = false;
+    private Boolean pureGoogleMode = null;
 
     private String adjustTokenTiktok;
 
@@ -167,7 +168,26 @@ public class ANRAdSdkConfig {
         this.adjustTokenTiktok = adjustTokenTiktok;
     }
 
+    public boolean isPureGoogleMode() {
+        if (pureGoogleMode != null) {
+            return pureGoogleMode;
+        }
+        boolean hasAppsFlyer = appsFlyerConfig != null && appsFlyerConfig.isEnableAppsFlyer();
+        boolean hasAdjust = adjustConfig != null && adjustConfig.isEnableAdjust();
+        boolean hasFacebook = facebookClientToken != null
+                && !facebookClientToken.isEmpty()
+                && !facebookClientToken.equals(DEFAULT_TOKEN_FACEBOOK_SDK);
+        return !(hasAppsFlyer || hasAdjust || hasFacebook);
+    }
+
+    public void setPureGoogleMode(boolean isPureGoogle) {
+        this.pureGoogleMode = isPureGoogle;
+    }
+
     public boolean isEnableFacebook() {
+        if (isPureGoogleMode()) {
+            return false;
+        }
         return enableFacebook;
     }
 
@@ -176,6 +196,9 @@ public class ANRAdSdkConfig {
     }
 
     public boolean isEnableFirebasePurchaseTracking() {
+        if (isPureGoogleMode()) {
+            return true;
+        }
         return enableFirebasePurchaseTracking;
     }
 
@@ -184,6 +207,9 @@ public class ANRAdSdkConfig {
     }
 
     public boolean isEnableFirebaseAdImpressionTracking() {
+        if (isPureGoogleMode()) {
+            return true;
+        }
         return enableFirebaseAdImpressionTracking;
     }
 
@@ -192,6 +218,9 @@ public class ANRAdSdkConfig {
     }
 
     public boolean isEnableFirebaseCustomEventTracking() {
+        if (isPureGoogleMode()) {
+            return true;
+        }
         return enableFirebaseCustomEventTracking;
     }
 
@@ -200,6 +229,9 @@ public class ANRAdSdkConfig {
     }
 
     public boolean isEnableLegacyAdRevenueEvents() {
+        if (isPureGoogleMode()) {
+            return false;
+        }
         return enableLegacyAdRevenueEvents;
     }
 
@@ -211,18 +243,5 @@ public class ANRAdSdkConfig {
         this.enableFirebasePurchaseTracking = enable;
         this.enableFirebaseAdImpressionTracking = enable;
         this.enableFirebaseCustomEventTracking = enable;
-    }
-
-    public void setPureGoogleMode(boolean isPureGoogle) {
-        if (isPureGoogle) {
-            this.enableFacebook = false;
-            this.enableLegacyAdRevenueEvents = false;
-            this.enableFirebasePurchaseTracking = true;
-            this.enableFirebaseAdImpressionTracking = true;
-            this.enableFirebaseCustomEventTracking = true;
-        } else {
-            this.enableFacebook = true;
-            this.enableLegacyAdRevenueEvents = true;
-        }
     }
 }
