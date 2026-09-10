@@ -39,6 +39,10 @@ public class ANRLogEventManager {
         return ANRAdSdk.getInstance().getAdConfig() != null && ANRAdSdk.getInstance().getAdConfig().isEnableFirebaseCustomEventTracking();
     }
 
+    private static boolean isLegacyAdRevenueEventsEnabled() {
+        return ANRAdSdk.getInstance().getAdConfig() == null || ANRAdSdk.getInstance().getAdConfig().isEnableLegacyAdRevenueEvents();
+    }
+
     public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName) {
         logPaidAdImpression(context, adValue, adUnitId, mediationAdapterClassName, null);
     }
@@ -87,6 +91,9 @@ public class ANRLogEventManager {
     }
 
     private static void logEventWithAds(Context context, float revenue, int precision, String adUnitId, String network) {
+        if (!isLegacyAdRevenueEventsEnabled()) {
+            return;
+        }
         Bundle params = new Bundle(); // Log ad value in micros.
         params.putDouble("valuemicros", revenue);
         params.putString("currency", "USD");

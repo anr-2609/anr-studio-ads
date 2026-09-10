@@ -20,6 +20,7 @@ public class ANRAdSdkConfig {
     private boolean enableAdResume = false;
     private String facebookClientToken = DEFAULT_TOKEN_FACEBOOK_SDK;
     private boolean enableFacebook = true;
+    private boolean enableLegacyAdRevenueEvents = true;
     private boolean enableFirebasePurchaseTracking = false;
     private boolean enableFirebaseAdImpressionTracking = false;
     private boolean enableFirebaseCustomEventTracking = false;
@@ -198,9 +199,30 @@ public class ANRAdSdkConfig {
         this.enableFirebaseCustomEventTracking = enableFirebaseCustomEventTracking;
     }
 
+    public boolean isEnableLegacyAdRevenueEvents() {
+        return enableLegacyAdRevenueEvents;
+    }
+
+    public void setEnableLegacyAdRevenueEvents(boolean enableLegacyAdRevenueEvents) {
+        this.enableLegacyAdRevenueEvents = enableLegacyAdRevenueEvents;
+    }
+
     public void setEnableGoogleStandardAnalytics(boolean enable) {
         this.enableFirebasePurchaseTracking = enable;
         this.enableFirebaseAdImpressionTracking = enable;
         this.enableFirebaseCustomEventTracking = enable;
+    }
+
+    public void setPureGoogleMode(boolean isPureGoogle) {
+        if (isPureGoogle) {
+            this.enableFacebook = false;
+            this.enableLegacyAdRevenueEvents = false;
+            this.enableFirebasePurchaseTracking = true;
+            this.enableFirebaseAdImpressionTracking = true;
+            this.enableFirebaseCustomEventTracking = true;
+        } else {
+            this.enableFacebook = true;
+            this.enableLegacyAdRevenueEvents = true;
+        }
     }
 }
