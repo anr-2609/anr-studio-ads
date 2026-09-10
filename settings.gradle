@@ -1,3 +1,3 @@
 include ':ads'
 include ':app'
-rootProject.name = "anrstudio-ads-sdk"
+rootProject.name = "anr-studio-ads"

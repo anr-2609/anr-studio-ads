@@ -23,6 +23,22 @@ public class ANRLogEventManager {
 
     private static final String TAG = "ANRLogEventManager";
 
+    private static boolean isFacebookEnabled() {
+        return ANRAdSdk.getInstance().getAdConfig() == null || ANRAdSdk.getInstance().getAdConfig().isEnableFacebook();
+    }
+
+    private static boolean isFirebasePurchaseTrackingEnabled() {
+        return ANRAdSdk.getInstance().getAdConfig() != null && ANRAdSdk.getInstance().getAdConfig().isEnableFirebasePurchaseTracking();
+    }
+
+    private static boolean isFirebaseAdImpressionTrackingEnabled() {
+        return ANRAdSdk.getInstance().getAdConfig() != null && ANRAdSdk.getInstance().getAdConfig().isEnableFirebaseAdImpressionTracking();
+    }
+
+    private static boolean isFirebaseCustomEventTrackingEnabled() {
+        return ANRAdSdk.getInstance().getAdConfig() != null && ANRAdSdk.getInstance().getAdConfig().isEnableFirebaseCustomEventTracking();
+    }
+
     public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName) {
         logPaidAdImpression(context, adValue, adUnitId, mediationAdapterClassName, null);
     }
@@ -37,11 +53,29 @@ public class ANRLogEventManager {
                 mediationAdapterClassName,
                 adType);
         float value = adValue.getValueMicros() * 1.0f / 1000000;
-        AppEventsLogger.newLogger(context).logPurchase(BigDecimal.valueOf(value), Currency.getInstance("USD"));
+        if (isFacebookEnabled() && context != null) {
+            AppEventsLogger.newLogger(context).logPurchase(BigDecimal.valueOf(value), Currency.getInstance("USD"));
+        }
+        if (isFirebaseAdImpressionTrackingEnabled()) {
+            FirebaseAnalyticsUtil.logAdImpressionStandard(context,
+                    adValue.getValueMicros() / 1000000.0,
+                    adValue.getCurrencyCode(),
+                    adUnitId,
+                    mediationAdapterClassName,
+                    adType);
+        }
     }
 
     public static void logPaidAdImpression(Context context, MaxAd maxAd, AdType adType) {
         ANRAppsFlyer.logPaidAdImpression(maxAd, adType);
+        if (isFirebaseAdImpressionTrackingEnabled() && maxAd != null) {
+            FirebaseAnalyticsUtil.logAdImpressionStandard(context,
+                    maxAd.getRevenue(),
+                    "USD",
+                    maxAd.getAdUnitId(),
+                    maxAd.getNetworkName(),
+                    adType);
+        }
     }
 
     public static void logPaidAdjustWithToken(AdValue adValue, String adUnitId, String token) {
@@ -153,6 +187,12 @@ public class ANRLogEventManager {
     public static void onTrackEvent(String eventName) {
         ANRAdjust.onTrackEvent(eventName);
         ANRAppsFlyer.onTrackEvent(ANRAdSdk.getInstance().getAdConfig().getApplication(), eventName);
+        if (isFirebaseCustomEventTrackingEnabled()) {
+            Context app = ANRAdSdk.getInstance().getAdConfig() != null ? ANRAdSdk.getInstance().getAdConfig().getApplication() : null;
+            if (app != null) {
+                FirebaseAnalyticsUtil.logCustomEvent(app, eventName, new Bundle());
+            }
+        }
     }
 
     public static void onTrackEvent(String eventName, String id) {
@@ -160,6 +200,14 @@ public class ANRLogEventManager {
         Map<String, Object> eventValues = new HashMap<>();
         eventValues.put("callback_id", id);
         ANRAppsFlyer.onTrackEvent(ANRAdSdk.getInstance().getAdConfig().getApplication(), eventName, eventValues);
+        if (isFirebaseCustomEventTrackingEnabled()) {
+            Context app = ANRAdSdk.getInstance().getAdConfig() != null ? ANRAdSdk.getInstance().getAdConfig().getApplication() : null;
+            if (app != null) {
+                Bundle bundle = new Bundle();
+                bundle.putString("callback_id", id);
+                FirebaseAnalyticsUtil.logCustomEvent(app, eventName, bundle);
+            }
+        }
     }
 
     public static void onTrackRevenue(String eventName, float revenue, String currency) {
@@ -171,6 +219,12 @@ public class ANRLogEventManager {
         ANRAdjust.onTrackRevenuePurchase(revenue, currency);
         ANRAppsFlyer.onTrackRevenuePurchase(ANRAdSdk.getInstance().getAdConfig().getApplication(),
                 revenue, currency, idPurchase, typeIAP, orderId, quantity);
+        if (isFirebasePurchaseTrackingEnabled()) {
+            Context app = ANRAdSdk.getInstance().getAdConfig() != null ? ANRAdSdk.getInstance().getAdConfig().getApplication() : null;
+            if (app != null) {
+                FirebaseAnalyticsUtil.logPurchase(app, revenue, currency, idPurchase, typeIAP, orderId, quantity);
+            }
+        }
     }
 
     public static void logAppsFlyerLogin() {

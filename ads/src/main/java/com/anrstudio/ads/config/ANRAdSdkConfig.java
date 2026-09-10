@@ -19,6 +19,10 @@ public class ANRAdSdkConfig {
     private Application application;
     private boolean enableAdResume = false;
     private String facebookClientToken = DEFAULT_TOKEN_FACEBOOK_SDK;
+    private boolean enableFacebook = true;
+    private boolean enableFirebasePurchaseTracking = false;
+    private boolean enableFirebaseAdImpressionTracking = false;
+    private boolean enableFirebaseCustomEventTracking = false;
 
     private String adjustTokenTiktok;
 
@@ -160,5 +164,43 @@ public class ANRAdSdkConfig {
     public void setAdjustTokenTiktok(String adjustTokenTiktok) {
         ADJUST_TOKEN_TIKTOK = adjustTokenTiktok;
         this.adjustTokenTiktok = adjustTokenTiktok;
+    }
+
+    public boolean isEnableFacebook() {
+        return enableFacebook;
+    }
+
+    public void setEnableFacebook(boolean enableFacebook) {
+        this.enableFacebook = enableFacebook;
+    }
+
+    public boolean isEnableFirebasePurchaseTracking() {
+        return enableFirebasePurchaseTracking;
+    }
+
+    public void setEnableFirebasePurchaseTracking(boolean enableFirebasePurchaseTracking) {
+        this.enableFirebasePurchaseTracking = enableFirebasePurchaseTracking;
+    }
+
+    public boolean isEnableFirebaseAdImpressionTracking() {
+        return enableFirebaseAdImpressionTracking;
+    }
+
+    public void setEnableFirebaseAdImpressionTracking(boolean enableFirebaseAdImpressionTracking) {
+        this.enableFirebaseAdImpressionTracking = enableFirebaseAdImpressionTracking;
+    }
+
+    public boolean isEnableFirebaseCustomEventTracking() {
+        return enableFirebaseCustomEventTracking;
+    }
+
+    public void setEnableFirebaseCustomEventTracking(boolean enableFirebaseCustomEventTracking) {
+        this.enableFirebaseCustomEventTracking = enableFirebaseCustomEventTracking;
+    }
+
+    public void setEnableGoogleStandardAnalytics(boolean enable) {
+        this.enableFirebasePurchaseTracking = enable;
+        this.enableFirebaseAdImpressionTracking = enable;
+        this.enableFirebaseCustomEventTracking = enable;
     }
 }

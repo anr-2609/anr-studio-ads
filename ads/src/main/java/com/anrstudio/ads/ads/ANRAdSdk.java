@@ -200,8 +200,10 @@ public class ANRAdSdk {
         initAdSuccess = true;
         if (initCallback != null)
             initCallback.initAdSuccess();
-        FacebookSdk.setClientToken(adConfig.getFacebookClientToken());
-        FacebookSdk.sdkInitialize(context);
+        if (adConfig.isEnableFacebook()) {
+            FacebookSdk.setClientToken(adConfig.getFacebookClientToken());
+            FacebookSdk.sdkInitialize(context);
+        }
     }
 
 
