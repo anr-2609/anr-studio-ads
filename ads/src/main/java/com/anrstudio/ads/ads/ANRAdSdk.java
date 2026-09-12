@@ -68,6 +68,9 @@ public class ANRAdSdk {
     }
 
     public Boolean getOrganic() {
+        if (adConfig != null && adConfig.isPureGoogleMode()) {
+            return false;
+        }
         return SharePreferenceUtils.getIsOrganic(adConfig.getApplication());
     }
 
