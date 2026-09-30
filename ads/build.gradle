@@ -10,7 +10,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 34
         versionCode 1
-        versionName "1.1.3"
+        versionName "1.1.6"
     }
 
     publishing {
@@ -91,9 +91,9 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
 
-                groupId = 'com.anrstudio'
+                groupId = 'com.github.anr-2609.anr-studio-ads'
                 artifactId = 'ads'
-                version = '1.1.3'
+                version = System.getenv('VERSION') ?: '1.1.6'
             }
         }
 
